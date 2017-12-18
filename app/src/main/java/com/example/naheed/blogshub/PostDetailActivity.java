@@ -33,6 +33,10 @@ public class PostDetailActivity extends AppCompatActivity
         webView.setVisibility(View.INVISIBLE);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
+
+        webView.getSettings().setLoadWithOverviewMode(true);
+//        webView.getSettings().setUseWideViewPort(true);
+
         webView.setWebViewClient(new WebViewClient() {
 
             @Override
