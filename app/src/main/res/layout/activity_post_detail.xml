@@ -8,21 +8,14 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.naheed.blogshub.PostDetailActivity">
 
-    <android.support.v7.widget.Toolbar
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true">
-    </android.support.v7.widget.Toolbar>
+        layout="@layout/toolbar_activity" />
 
     <WebView
         android:id="@+id/detailWebView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="30dp"></WebView>
+        android:layout_height="match_parent"></WebView>
 
     <ProgressBar
         android:id="@+id/progressBar"

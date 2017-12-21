@@ -1,20 +1,24 @@
 package com.example.naheed.blogshub;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
-import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.Toast;
 
-import com.example.naheed.blogshub.models.PostList;
 import com.example.naheed.blogshub.adapters.BlogPostAdapter;
+import com.example.naheed.blogshub.models.PostList;
 import com.example.naheed.blogshub.utils.Constants;
+import com.example.naheed.blogshub.utils.ProgressDialogUtility;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,12 +26,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
+    private BlogPostAdapter mBlogPostAdapter;
 
     @BindView(R.id.drawerLayout) DrawerLayout drawerLayout;
     @BindView(R.id.navigation_menu) NavigationView navigationView;
     @BindView(R.id.postRecyclerView) RecyclerView recyclerView;
-    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar_home) Toolbar toolbar;
 
     ActionBarDrawerToggle actionBarDrawerToggle;
 
@@ -71,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupToobar()
     {
-        //To consider the toolbar that we have setup in Layout File and not the one in the styles file
+        //To consider the toolbar_home that we have setup in Layout File and not the one in the styles file
         //To make this backward compatible
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name,R.string.app_name);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -82,19 +89,84 @@ public class MainActivity extends AppCompatActivity {
 
     void getData()
     {
+        ProgressDialogUtility.startProgressDialog(MainActivity.this);
         final Call<PostList> postList = RetrofitManager.getService(Constants.kBloggerURL).getPostList();
+
         postList.enqueue(new Callback<PostList>() {
             @Override
             public void onResponse(Call<PostList> call, Response<PostList> response) {
                 PostList list = response.body();
-                recyclerView.setAdapter(new BlogPostAdapter(MainActivity.this, list.getItems()));
+                mBlogPostAdapter =  new BlogPostAdapter(MainActivity.this, list.getItems());
+                recyclerView.setAdapter(mBlogPostAdapter);
+
+                ProgressDialogUtility.dismissProgressDialog();
+
                 Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<PostList> call, Throwable t) {
+                ProgressDialogUtility.dismissProgressDialog();
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        MenuItem search = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) search.getActionView();
+        search(searchView);
+        return true;
+    }
+
+    private void search(SearchView searchView)
+    {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                if (mBlogPostAdapter != null)
+                    mBlogPostAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+//        int id = item.getItemId();
+//
+//        switch (id) {
+//            case R.id.action_settings:
+//                return true;
+//            case R.id.action_search:
+//                handleMenuSearch();
+//                return true;
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+//        if(isSearchOpened) {
+//            handleMenuSearch();
+//            return;
+//        }
+        super.onBackPressed();
     }
 }

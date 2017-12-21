@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,18 +21,22 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
+
 /**
  * Created by nasheed on 12/12/17.
  */
 
-public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPostViewHolder>
+public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPostViewHolder> implements Filterable
 {
     private Context mContext;
-    private Items[] items;
+    private Items[] mItems;
+    private Items[] mFilteredItems;
 
     public BlogPostAdapter(Context mContext, Items[] items) {
         this.mContext = mContext;
-        this.items = items;
+        this.mItems = items;
+        this.mFilteredItems = items;
     }
 
     @Override
@@ -42,9 +48,9 @@ public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPo
 
     @Override
     public void onBindViewHolder(BlogPostViewHolder holder, int position) {
-        final Items item = items[position];
-        holder.postTitle.setText(item.getTitle());
+        final Items item = mFilteredItems[position];
 
+        holder.postTitle.setText(item.getTitle());
         Document document = Jsoup.parse(item.getContent());
         holder.postDescription.setText(document.text());
 
@@ -69,8 +75,53 @@ public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPo
 
     @Override
     public int getItemCount() {
-        return items.length;
+        return mFilteredItems.length;
     }
+
+    @Override
+    public Filter getFilter()
+    {
+        return new Filter()
+        {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+
+                if (charString.isEmpty())
+                {
+                    mFilteredItems = mItems;
+                }
+                else
+                {
+                    ArrayList<Items> filteredList = new ArrayList<>();
+
+                    for (Items item : mItems)
+                    {
+                        // Specify Filter Conditions
+                        if (item.getTitle().toLowerCase().contains(charString) ||
+                                item.getTitle().toLowerCase().contains(charString))
+                        {
+                                        filteredList.add(item);
+                        }
+                    }
+
+                    mFilteredItems = filteredList.toArray(new Items[filteredList.size()]);
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mFilteredItems;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mFilteredItems = (Items[]) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
 
     public class BlogPostViewHolder extends RecyclerView.ViewHolder
     {

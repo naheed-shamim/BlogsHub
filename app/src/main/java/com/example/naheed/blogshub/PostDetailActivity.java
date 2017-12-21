@@ -7,6 +7,8 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,23 +21,45 @@ public class PostDetailActivity extends AppCompatActivity
     @BindView(R.id.toolbar) android.support.v7.widget.Toolbar toolbar;
     @BindView(R.id.detailWebView) WebView webView;
 
+
+    ArrayAdapter<String> myAdapter;
+    ListView listView;
+    String[] dataArray = new String[]{"Abcd","bcde","cdef","defgh"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
         ButterKnife.bind(this);
 
-        toolbar.setTitle("My Title");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setupToolbar();
 
+        setupWebView();
+    }
+
+    private void setupToolbar()
+    {
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Hello");
+        getSupportActionBar().setIcon(null);
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("My Profile");
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+    }
+
+
+
+    private void setupWebView()
+    {
         webView.setVisibility(View.INVISIBLE);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
-
         webView.getSettings().setLoadWithOverviewMode(true);
-//        webView.getSettings().setUseWideViewPort(true);
 
         webView.setWebViewClient(new WebViewClient() {
 
@@ -56,8 +80,6 @@ public class PostDetailActivity extends AppCompatActivity
         String mime = "text/html";
         String encoding = "utf-8";
         webView.loadData(getIntent().getStringExtra("divContent"), mime, encoding);
-//        webView.loadUrl(getIntent().getStringExtra("url"));
-//        webView.load
     }
 
     @Override
