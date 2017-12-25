@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by nasheed on 13/12/17.
+ * Created by Naheed on 13/12/17.
  */
 
 public class RetrofitManager

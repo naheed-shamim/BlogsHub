@@ -7,7 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 /**
- * Created by nasheed on 13/12/17.
+ * Created by Naheed on 13/12/17.
  */
 
 public interface BloggerService {

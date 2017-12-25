@@ -1,7 +1,7 @@
 package com.example.naheed.blogshub.utils;
 
 /**
- * Created by nasheed on 13/12/17.
+ * Created by Naheed on 13/12/17.
  */
 
 public class Constants {

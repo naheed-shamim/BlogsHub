@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.example.naheed.blogshub.adapters.BlogPostAdapter;
 import com.example.naheed.blogshub.models.PostList;
+import com.example.naheed.blogshub.utils.AlertUtils;
 import com.example.naheed.blogshub.utils.Constants;
+import com.example.naheed.blogshub.utils.NetworkUtils;
 import com.example.naheed.blogshub.utils.ProgressDialogUtility;
 
 import butterknife.BindView;
@@ -46,11 +48,23 @@ public class MainActivity extends AppCompatActivity
         setupInit();
     }
 
-    private void setupInit(){
+    private void setupInit()
+    {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setMenuClickListeners();
         setupToobar();
-        getData();
+
+        if (isConnectedToInternet())
+            getData();
+    }
+
+    private boolean isConnectedToInternet()
+    {
+        boolean isConnected =  NetworkUtils.isInternetConnected();
+        String msg = isConnected ? "Connected to Internet": "No Internet Connection";
+        AlertUtils.showShortToast(msg);
+
+        return isConnected;
     }
 
     private void setMenuClickListeners()
@@ -158,8 +172,6 @@ public class MainActivity extends AppCompatActivity
 //        }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void onBackPressed() {

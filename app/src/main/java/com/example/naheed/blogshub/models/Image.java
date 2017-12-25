@@ -1,7 +1,7 @@
 package com.example.naheed.blogshub.models;
 
 /**
- * Created by nasheed on 07/12/17.
+ * Created by Naheed on 07/12/17.
  */
 
 public class Image

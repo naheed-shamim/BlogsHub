@@ -24,7 +24,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 
 /**
- * Created by nasheed on 12/12/17.
+ * Created by Naheed on 12/12/17.
  */
 
 public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPostViewHolder> implements Filterable
