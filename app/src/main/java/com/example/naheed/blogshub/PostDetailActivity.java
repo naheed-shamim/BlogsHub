@@ -2,6 +2,8 @@ package com.example.naheed.blogshub;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -12,19 +14,21 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.naheed.blogshub.adapters.TabsPagerAdapter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PostDetailActivity extends AppCompatActivity
 {
-    @BindView(R.id.progressBar) ProgressBar progressBar;
+
     @BindView(R.id.toolbar) android.support.v7.widget.Toolbar toolbar;
-    @BindView(R.id.detailWebView) WebView webView;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.pager) ViewPager viewPager;
 
+    private TabsPagerAdapter tabsPagerAdapter;
 
-    ArrayAdapter<String> myAdapter;
-    ListView listView;
-    String[] dataArray = new String[]{"Abcd","bcde","cdef","defgh"};
+    String[] tabsArray = new String[]{"Post","Comments"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,70 +36,66 @@ public class PostDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_post_detail);
         ButterKnife.bind(this);
 
-        setupToolbar();
+        setupTabLayout();
 
-        setupWebView();
+        initSetup();
     }
+
+    private void initSetup()
+    {
+        setupToolbar();
+//        setupWebView();
+    }
+
+    private void setupTabLayout()
+    {
+        tabLayout.addTab(tabLayout.newTab().setText("Post"));
+        tabLayout.addTab(tabLayout.newTab().setText("Comments"));
+
+        tabsPagerAdapter = new TabsPagerAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
+        viewPager.setAdapter(tabsPagerAdapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
 
     private void setupToolbar()
     {
-
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Hello");
+//        getSupportActionBar().setTitle("Hello");
         getSupportActionBar().setIcon(null);
-
+//        getSupportActionBar().setna
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle("My Profile");
+//        getSupportActionBar().setTitle("My Profile");
         getSupportActionBar().setDisplayUseLogoEnabled(false);
     }
 
 
 
-    private void setupWebView()
-    {
-        webView.setVisibility(View.INVISIBLE);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.getSettings().setLoadWithOverviewMode(true);
-
-        webView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                Toast.makeText(PostDetailActivity.this,"Loading began",Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressBar.setVisibility(View.GONE);
-                webView.setVisibility(View.VISIBLE);
-                Toast.makeText(PostDetailActivity.this,"Page Loaded", Toast.LENGTH_SHORT).show();
-            }
-        });
-        String mime = "text/html";
-        String encoding = "utf-8";
-        webView.loadData(getIntent().getStringExtra("divContent"), mime, encoding);
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-    /*
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void actionBarSetup() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ActionBar ab = getActionBar();
-            ab.setTitle("My Title");
-            ab.setSubtitle("sub-title");
-        }
-    }
-    */
 }

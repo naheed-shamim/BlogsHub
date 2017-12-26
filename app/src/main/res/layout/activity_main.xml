@@ -17,14 +17,6 @@
             android:id="@+id/toolbar_home"
             layout="@layout/toolbar_home" />
 
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@toolbar_homelbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
-        <!--</android.support.v7.widget.Toolbar>-->
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/postRecyclerView"
             android:layout_width="match_parent"

@@ -57,7 +57,6 @@ public class BlogPostAdapter extends RecyclerView.Adapter<BlogPostAdapter.BlogPo
         Elements contentElement = document.select("div");
         final String html = contentElement.toString();
 
-
         Elements elements = document.select("img");
         Log.d("CODE","Image -"+elements.get(0).attr("src"));
         Glide.with(mContext).load(elements.get(0).attr("src")).into(holder.postImage);
